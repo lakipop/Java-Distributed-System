@@ -29,31 +29,35 @@ public class TCPPriceServer {
 
     public static void main(String[] args) throws IOException {
 
-        ServerSocket serverSocket = new ServerSocket(1099);
-        while (true) {
-            Socket socket = serverSocket.accept();
-            System.out.println("Accepted connection from " + socket.getRemoteSocketAddress());
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            String item = in.readLine();
-            System.out.println("Request Item "+item);
+        try (ServerSocket serverSocket = new ServerSocket(1099)) {
+            while (true) {
+                Socket socket = serverSocket.accept();
+                System.out.println("Accepted connection from " + socket.getRemoteSocketAddress());
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                String item = in.readLine();
+                System.out.println("Request Item "+item);
 
-            if(prices.containsKey(item) && discounts.containsKey(item)) {
-                double price = prices.get(item);
-                double discount = discounts.get(item);
-                double finalPrice = price - ((price * discount)/100);
+                if(prices.containsKey(item) && discounts.containsKey(item)) {
+                    double price = prices.get(item);
+                    double discount = discounts.get(item);
+                    double finalPrice = price - ((price * discount)/100);
 
-                System.out.println("Item "+item+" price "+price+" discount "+discount +" finalPrice "+finalPrice);
-                out.println("Item "+item+" price "+price+" discount "+discount +" finalPrice "+finalPrice);
+                    System.out.println("Item "+item+" price "+price+" discount "+discount +" finalPrice "+finalPrice);
+                    out.println("Item "+item+" price "+price+" discount "+discount +" finalPrice "+finalPrice);
+
+                }
+                else {
+                    out.println("Invalid item");
+                }
+
+                socket.close();
+                System.out.println("Closing connection");
 
             }
-            else {
-                out.println("Invalid item");
-            }
-
-            socket.close();
-            System.out.println("Closing connection");
-
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
 
     }

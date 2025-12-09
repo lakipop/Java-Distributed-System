@@ -17,6 +17,7 @@ public class ChatClient {
             String message = sc.nextLine();
             String response = stub.sendMessage(message);
             System.out.println(response);
+            sc.close();
 
 
 

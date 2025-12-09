@@ -23,6 +23,7 @@ public class TCPClient {
         String response = in.readLine();
         System.out.println(response);
         socket.close();
+        sc.close();
         
     }
 }
